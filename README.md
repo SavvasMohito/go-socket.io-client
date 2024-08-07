@@ -1,6 +1,7 @@
 # go-socket.io-client
 socket.io client for go. Support EIO4.
 
+
 ## Install
 
 Install the package with:
@@ -23,4 +24,4 @@ and use `socketio` as the package name inside the code.
 
 ## License
 
-MIT license
+MIT
