@@ -5,30 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
-
-const Protocol = 5
-
-type PacketType int
-
-const (
-	CONNECT PacketType = iota
-	DISCONNECT
-	EVENT
-	ACK
-	CONNECT_ERROR
-	BINARY_EVENT
-	BINARY_ACK
-)
-
-type Packet struct {
-	Type        PacketType
-	Nsp         string
-	Data        interface{}
-	Id          *int
-	Attachments int
-}
 
 func isBinary(obj interface{}) bool {
 	switch obj.(type) {
@@ -132,8 +111,8 @@ func encodeAsString(packet Packet) string {
 		builder.WriteString(fmt.Sprintf("%s,", packet.Nsp))
 	}
 
-	if packet.Id != nil {
-		builder.WriteString(fmt.Sprintf("%d", *packet.Id))
+	if packet.NeedAck {
+		builder.WriteString(fmt.Sprintf("%d", packet.Id))
 	}
 
 	if packet.Data != nil {
@@ -243,13 +222,10 @@ func DecodeString(str string) (Packet, error) {
 			for j < len(str) && str[j] >= '0' && str[j] <= '9' {
 				j++
 			}
-			num := int(str[i:j][0] - '0')
-			packet.Id = &num
+			num, _ := strconv.Atoi(str[i:j])
+			packet.Id = num
+			packet.NeedAck = true
 			i = j
-		}
-
-		if i >= len(str) {
-			return
 		}
 
 		if i < len(str) {
