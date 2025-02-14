@@ -181,7 +181,7 @@ func (c *Client) clientRead() error {
 
 					// in protocol v4 & text msg Connection to a namespace
 				} else {
-					replyMsg := protocol.CommonMsg + protocol.OpenMsg + c.namespace + ","
+					replyMsg := protocol.CommonMsg + protocol.OpenMsg + c.namespace
 					if c.auth != nil {
 						jsonData, _ := json.Marshal(c.auth)
 						dataText := string(jsonData)
