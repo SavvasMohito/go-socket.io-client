@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/url"
-	"path"
 	"strings"
 	"time"
 
@@ -73,11 +72,11 @@ func NewClient(addr string, opts *ClientOptions) (*Client, error) {
 
 	u.Path = "/socket.io"
 	if opts.Path != "" {
-		u.Path = path.Join(u.Path, opts.Path)
+		u.Path = opts.Path
 	}
 
 	u.Path = u.EscapedPath()
-	if strings.HasSuffix(u.Path, "socket.io") {
+	if !strings.HasSuffix(u.Path, "/") {
 		u.Path += "/"
 	}
 	c.path = u.Path
